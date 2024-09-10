@@ -82,12 +82,18 @@ module RuboCop
 
         def offensive?(comment)
           line = source_line(comment)
+          return false if rbs_inline_annotation?(line, comment)
+
           KEYWORD_REGEXES.any? { |r| r.match?(line) } &&
             ALLOWED_COMMENT_REGEXES.none? { |r| r.match?(line) }
         end
 
         def source_line(comment)
           comment.source_range.source_line
+        end
+
+        def rbs_inline_annotation?(line, comment)
+          comment.text.start_with?('#:') && line =~ /^\s*def\s/
         end
       end
     end
