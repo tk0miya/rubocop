@@ -264,6 +264,16 @@ RSpec.describe RuboCop::Cop::Style::AccessorGrouping, :config do
         end
       RUBY
     end
+
+    it 'does not register an offense for grouped accessors having rbs-inline annotation' do
+      expect_no_offenses(<<~RUBY)
+        class Foo
+          attr_reader :one #: String
+
+          attr_reader :two, :three
+        end
+      RUBY
+    end
   end
 
   context 'when EnforcedStyle is separated' do

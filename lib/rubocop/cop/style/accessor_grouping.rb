@@ -105,6 +105,10 @@ module RuboCop
 
           return true unless previous_expression.send_type?
 
+          # Accessors with rbs-inline annotations shouldn't be groupable.
+          trailing_comment = processed_source.comments.find { |c| c.loc.line == previous_expression.first_line }
+          return false if trailing_comment&.text =~ /#:/
+
           previous_expression.attribute_accessor? ||
             previous_expression.access_modifier? ||
             node.first_line - previous_expression.last_line > 1 # there is a space between nodes
